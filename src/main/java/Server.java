@@ -25,9 +25,8 @@ public class Server {
       try {
         Integer.parseInt(args[0]);
       } catch (NumberFormatException e) {
-        System.err.println("Invalid port number");
-        System.out.println("Usage: java Server <port>");
-        System.exit(1);
+        logMessage("Usage: java -jar DeianaSimone.jar <port>", System.out);
+        throw new IllegalArgumentException("Invalid port number", e);
       }
 
       while (true) {
