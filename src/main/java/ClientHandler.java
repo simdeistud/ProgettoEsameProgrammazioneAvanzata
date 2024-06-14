@@ -74,7 +74,7 @@ public class ClientHandler extends Thread {
 
       transmitOkResponse(resp, responseTime);
 
-      logInfo("Replied to " + socket.getInetAddress() + " with \"" + resp +  "\"");
+      logInfo("Replied to " + socket.getInetAddress() + " with \"" + resp + "\"");
 
     } while (true);
 
@@ -108,9 +108,6 @@ public class ClientHandler extends Thread {
   private void logError(String msg) {
     Server.logMessage("Error : " + msg, System.err);
   }
-
-
-
 
 
   static class RequestHandler {
@@ -181,8 +178,8 @@ public class ClientHandler extends Thread {
 
       // Step 2 : building of value tuples T from a
       Set<ValueTuple> T = getTupleBuilder(req.valuesKind()).apply(req.variableValues().parallelStream().map(a).toList());
-      if(T == null){
-        throw new MalformedRequestException(switch (req.valuesKind()){
+      if (T == null) {
+        throw new MalformedRequestException(switch (req.valuesKind()) {
           case GRID -> "The range of one of the variables is the empty set";
           case LIST -> "Variables' ranges do not have the same magnitude";
         });
@@ -246,8 +243,8 @@ public class ClientHandler extends Thread {
     private static Function<List<Set<Double>>, Set<ValueTuple>> getTupleBuilder(CompRequest.ValuesKind valuesKind) {
 
       Function<List<Set<Double>>, Set<ValueTuple>> cartesianProduct = sets -> {
-        for(Set<Double> s : sets){
-          if(s == null){  // an empty set makes the set of tuples an empty set
+        for (Set<Double> s : sets) {
+          if (s == null) {  // an empty set makes the set of tuples an empty set
             return null;
           }
         }
