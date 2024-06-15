@@ -7,8 +7,8 @@ public abstract class TokenizedRequest extends Request {
   private final List<String> tokens;
   private final RequestType type;
 
-  protected TokenizedRequest(String req, List<String> tokens, RequestType type) {
-    super(req);
+  protected TokenizedRequest(String content, List<String> tokens, RequestType type) {
+    super(content);
     this.tokens = tokens;
     this.type = type;
   }

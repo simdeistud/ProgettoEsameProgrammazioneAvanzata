@@ -44,7 +44,7 @@ public class ClientHandler extends Thread {
         );
       }
 
-      long requestStartTime = System.currentTimeMillis();
+      final long requestStartTime = System.currentTimeMillis();
 
       TokenizedRequest request;
 
@@ -56,10 +56,6 @@ public class ClientHandler extends Thread {
         continue;
       }
 
-      if (request.type() == TokenizedRequest.RequestType.QUIT) {
-        break;
-      }
-
       String resp;
       try {
         resp = RequestHandler.generateResponse(request);
@@ -69,7 +65,11 @@ public class ClientHandler extends Thread {
         continue;
       }
 
-      long responseTime = System.currentTimeMillis() - requestStartTime;
+      if (request.type() == TokenizedRequest.RequestType.QUIT) {
+        break;
+      }
+
+      final long responseTime = System.currentTimeMillis() - requestStartTime;
       Server.updateRespsStats(responseTime);
 
       transmitOkResponse(resp, responseTime);
@@ -112,7 +112,7 @@ public class ClientHandler extends Thread {
 
   static class RequestHandler {
 
-    static String generateResponse(TokenizedRequest request) throws ExecutionException, InterruptedException, MalformedRequestException {
+    static String generateResponse(final TokenizedRequest request) throws ExecutionException, InterruptedException, MalformedRequestException {
 
       return switch (request.type()) {
         case QUIT -> generateQuitResponse();
@@ -142,7 +142,7 @@ public class ClientHandler extends Thread {
     private static String generateComputationResponse(final CompRequest req) throws MalformedRequestException, ExecutionException, InterruptedException {
 
       // we check that for every expression all the variables are present in the VariableValues declaration
-      boolean variablesAreValid = switch (req.kind()) {
+      boolean variablesAreValid = switch (req.computationKind()) {
         // the COUNT operation is only concerned about the size of the domain, the expressions can be arbitrary
         case COUNT -> true;
         // the AVG operation only deals with the first expression inputted by the user, the rest can be garbage
@@ -158,7 +158,7 @@ public class ClientHandler extends Thread {
 
     }
 
-    private static Number computeResult(CompRequest req) throws MalformedRequestException, ExecutionException, InterruptedException {
+    private static Number computeResult(final CompRequest req) throws MalformedRequestException, ExecutionException, InterruptedException {
 
       // Step 1 : Parsing of VariableValuesFunction to a
       // This function takes a VariableValue declaration and turns it into a set of real values
@@ -186,7 +186,7 @@ public class ClientHandler extends Thread {
       }
 
       // Step 4 : computation of o from T and E
-      return switch (req.kind()) {
+      return switch (req.computationKind()) {
 
         case COUNT -> Server.COMP_REQS_EXECUTOR.submit(T::size).get();
 
@@ -199,8 +199,8 @@ public class ClientHandler extends Thread {
               for (CompRequest.VariableValue v : req.variableValues()) {
                 input.put(v.name(), t.values[c++]);
               }
-              if (max < e.toRealVariableVectorFunction().apply(input)) {
-                max = e.toRealVariableVectorFunction().apply(input);
+              if (max < e.toFunction().apply(input)) {
+                max = e.toFunction().apply(input);
               }
             }
           }
@@ -216,8 +216,8 @@ public class ClientHandler extends Thread {
               for (CompRequest.VariableValue v : req.variableValues()) {
                 input.put(v.name(), t.values[c++]);
               }
-              if (min > e.toRealVariableVectorFunction().apply(input)) {
-                min = e.toRealVariableVectorFunction().apply(input);
+              if (min > e.toFunction().apply(input)) {
+                min = e.toFunction().apply(input);
               }
             }
           }
@@ -232,7 +232,7 @@ public class ClientHandler extends Thread {
             for (CompRequest.VariableValue v : req.variableValues()) {
               input.put(v.name(), t.values[c++]);
             }
-            sum += req.expressions().getFirst().toRealVariableVectorFunction().apply(input);
+            sum += req.expressions().getFirst().toFunction().apply(input);
           }
           return sum / T.size();
         }).get();
@@ -240,7 +240,7 @@ public class ClientHandler extends Thread {
       };
     }
 
-    private static Function<List<Set<Double>>, Set<ValueTuple>> getTupleBuilder(CompRequest.ValuesKind valuesKind) {
+    private static Function<List<Set<Double>>, Set<ValueTuple>> getTupleBuilder(final CompRequest.ValuesKind valuesKind) {
 
       Function<List<Set<Double>>, Set<ValueTuple>> cartesianProduct = sets -> {
         for (Set<Double> s : sets) {
@@ -289,7 +289,7 @@ public class ClientHandler extends Thread {
 
     }
 
-    private static boolean exprVarsSubsetOfVarVals(List<Expression> expressions, List<CompRequest.VariableValue> variables) {
+    private static boolean exprVarsSubsetOfVarVals(final List<Expression> expressions, List<CompRequest.VariableValue> variables) {
 
       for (Expression e : expressions) {
         Set<String> exprVars = Set.copyOf(e.variables().stream().map(Variable::name).toList());
@@ -305,21 +305,21 @@ public class ClientHandler extends Thread {
 
     record ValueTuple(Double[] values) {
 
-      ValueTuple(ValueTuple t, double v) {
+      ValueTuple(final ValueTuple t, final double v) {
         this(concat(t.values, new Double[]{v}));
       }
 
-      ValueTuple(ValueTuple t1, ValueTuple t2) {
+      ValueTuple(final ValueTuple t1, final ValueTuple t2) {
         this(concat(t1.values, t2.values));
       }
 
-      private static Double[] concat(Double[] arr1, Double[] arr2) {
+      private static Double[] concat(final Double[] arr1, final Double[] arr2) {
         Double[] result = Arrays.copyOf(arr1, arr1.length + arr2.length);
         System.arraycopy(arr2, 0, result, arr1.length, arr2.length);
         return result;
       }
 
-      static Set<ValueTuple> valueSetToTupleSet(Set<Double> setToTuple) {
+      static Set<ValueTuple> valueSetToTupleSet(final Set<Double> setToTuple) {
         Set<ValueTuple> setTupled = new HashSet<>();
         for (Double d : setToTuple) {
           setTupled.add(valueToTuple(d));
@@ -327,7 +327,7 @@ public class ClientHandler extends Thread {
         return setTupled;
       }
 
-      static ValueTuple valueToTuple(Double d) {
+      static ValueTuple valueToTuple(final Double d) {
         return new ValueTuple(new Double[]{d});
       }
 

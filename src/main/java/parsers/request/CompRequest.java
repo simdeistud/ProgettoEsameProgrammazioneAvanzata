@@ -4,29 +4,28 @@ import parsers.expression.Expression;
 import parsers.expression.Node;
 
 import java.util.List;
-import java.util.function.Function;
 
 public class CompRequest extends TokenizedRequest {
 
-  private final ComputationKind compKind;
-  private final ValuesKind valKind;
+  private final ComputationKind computationKind;
+  private final ValuesKind valuesKind;
   private final List<VariableValue> variableValues;
   private final List<Expression> expressions;
 
-  protected CompRequest(String req, List<String> tokens, RequestType type, ComputationKind compKind, ValuesKind valKind, List<VariableValue> variableValues, List<Node> expressions) {
-    super(req, tokens, type);
-    this.compKind = compKind;
-    this.valKind = valKind;
+  protected CompRequest(String req, List<String> tokens, ComputationKind computationKind, ValuesKind valuesKind, List<VariableValue> variableValues, List<Node> expressions) {
+    super(req, tokens, RequestType.COMP);
+    this.computationKind = computationKind;
+    this.valuesKind = valuesKind;
     this.variableValues = variableValues;
     this.expressions = expressions.parallelStream().map(Expression::new).toList();
   }
 
-  public ComputationKind kind() {
-    return compKind;
+  public ComputationKind computationKind() {
+    return computationKind;
   }
 
   public ValuesKind valuesKind() {
-    return valKind;
+    return valuesKind;
   }
 
   public List<VariableValue> variableValues() {

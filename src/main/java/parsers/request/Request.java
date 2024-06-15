@@ -2,15 +2,15 @@ package parsers.request;
 
 public class Request {
 
-  private final String req;
+  private final String content;
 
-  public Request(String req) {
-    this.req = req;
+  public Request(String content) {
+    this.content = content;
   }
 
   @Override
   public String toString() {
-    return req;
+    return content;
   }
 
 }

@@ -21,22 +21,22 @@ public record Expression(Node root) {
     return variables;
   }
 
-  public Function<Map<String, Double>, Double> toRealVariableVectorFunction() {
-    return subtreeToRealVariableVectorFunction(root);
+  public Function<Map<String, Double>, Double> toFunction() {
+    return expressionToFunction(root);
   }
 
-  private Function<Map<String, Double>, Double> subtreeToRealVariableVectorFunction(Node root) {
+  private Function<Map<String, Double>, Double> expressionToFunction(Node root) {
     if (root instanceof Variable) {
       return m -> m.get(((Variable) root).name());
     }
     if (root instanceof Constant) {
-      return m -> ((Constant) root).value();
+      return _ -> ((Constant) root).value();
     }
     return m ->
             ((Operator) root).type().toFunction().apply(
                     new double[]{
-                            subtreeToRealVariableVectorFunction(root.children().getFirst()).apply(m),
-                            subtreeToRealVariableVectorFunction(root.children().getLast()).apply(m)
+                            expressionToFunction(root.children().getFirst()).apply(m),
+                            expressionToFunction(root.children().getLast()).apply(m)
                     });
 
   }

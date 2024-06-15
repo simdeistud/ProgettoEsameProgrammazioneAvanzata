@@ -6,8 +6,8 @@ public class StatRequest extends TokenizedRequest {
 
   private final StatKind kind;
 
-  protected StatRequest(String req, List<String> tokens, RequestType type, StatKind kind) {
-    super(req, tokens, type);
+  protected StatRequest(String req, List<String> tokens, StatKind kind) {
+    super(req, tokens, RequestType.STAT);
     this.kind = kind;
   }
 

@@ -18,18 +18,18 @@ public class RequestParser {
 
   public TokenizedRequest parse() throws MalformedRequestException {
     return switch (req.toString()) {
-      case "BYE" -> new QuitRequest(req.toString(), List.of(req.toString()), TokenizedRequest.RequestType.QUIT);
+      case "BYE" -> new QuitRequest(req.toString(), List.of(req.toString()));
       case "STAT_REQS" ->
-              new StatRequest(req.toString(), List.of(req.toString()), TokenizedRequest.RequestType.STAT, StatRequest.StatKind.REQS);
+              new StatRequest(req.toString(), List.of(req.toString()), StatRequest.StatKind.REQS);
       case "STAT_AVG_TIME" ->
-              new StatRequest(req.toString(), List.of(req.toString()), TokenizedRequest.RequestType.STAT, StatRequest.StatKind.AVG_TIME);
+              new StatRequest(req.toString(), List.of(req.toString()), StatRequest.StatKind.AVG_TIME);
       case "STAT_MAX_TIME" ->
-              new StatRequest(req.toString(), List.of(req.toString()), TokenizedRequest.RequestType.STAT, StatRequest.StatKind.MAX_TIME);
+              new StatRequest(req.toString(), List.of(req.toString()), StatRequest.StatKind.MAX_TIME);
       default -> parseComputationRequest();
     };
   }
 
-  private TokenizedRequest parseComputationRequest() throws MalformedRequestException {
+  private CompRequest parseComputationRequest() throws MalformedRequestException {
     int cursor = 0;
     final List<String> tokens = new ArrayList<>();
     final TokenizedRequest.RequestType requestType;
@@ -37,8 +37,7 @@ public class RequestParser {
     final CompRequest.ValuesKind valuesKind;
     final List<CompRequest.VariableValue> variableValues = new ArrayList<>();
     final List<Node> expressions = new ArrayList<>();
-    record Token(int start, int end) {
-    }
+    record Token(int start, int end) {}
     Matcher matcher;
     Token token;
 
@@ -92,7 +91,7 @@ public class RequestParser {
       cursor = token.end;
     }
 
-    // parses the values functions
+    // parses the variable values
     do {
 
       matcher = Pattern.compile("[a-z][a-z0-9]:[^:]*:[^:]*:[^,;]*[,;]").matcher(req.toString());
@@ -119,7 +118,6 @@ public class RequestParser {
 
     // parses the expressions
     do {
-      //String expression = req.toString().substring(cursor);
       matcher = Pattern.compile(";").matcher(req.toString());
       try {
         if (!matcher.find(cursor)) {
@@ -138,7 +136,7 @@ public class RequestParser {
 
     } while (req.toString().charAt(cursor++) == ';');
 
-    return new CompRequest(req.toString(), tokens, requestType, computationKind, valuesKind, variableValues, expressions);
+    return new CompRequest(req.toString(), tokens, computationKind, valuesKind, variableValues, expressions);
 
   }
 
