@@ -60,7 +60,7 @@ public class Operator extends Node {
         sb.append("(");
         sb.append(children().stream()
                 .map(Node::toString)
-                .collect(Collectors.joining(" " + Character.toString(type.symbol) + " "))
+                .collect(Collectors.joining(" " + type.symbol + " "))
         );
         sb.append(")");
         return sb.toString();

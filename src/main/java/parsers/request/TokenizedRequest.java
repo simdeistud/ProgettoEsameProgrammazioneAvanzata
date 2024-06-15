@@ -24,7 +24,7 @@ public abstract class TokenizedRequest extends Request {
   public enum RequestType {
     QUIT,
     STAT,
-    COMP;
+    COMP
   }
 
 }

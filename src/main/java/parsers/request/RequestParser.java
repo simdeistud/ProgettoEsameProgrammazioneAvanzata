@@ -32,7 +32,6 @@ public class RequestParser {
   private CompRequest parseComputationRequest() throws MalformedRequestException {
     int cursor = 0;
     final List<String> tokens = new ArrayList<>();
-    final TokenizedRequest.RequestType requestType;
     final CompRequest.ComputationKind computationKind;
     final CompRequest.ValuesKind valuesKind;
     final List<CompRequest.VariableValue> variableValues = new ArrayList<>();
@@ -46,7 +45,6 @@ public class RequestParser {
     if (!matcher.find(cursor) || cursor != matcher.start()) {
       throw new MalformedRequestException("Invalid request type");
     } else {
-      requestType = TokenizedRequest.RequestType.COMP;
       token = new Token(cursor, matcher.end());
       tokens.add(req.toString().substring(token.start, token.end));
       computationKind = switch (tokens.getLast()) {
