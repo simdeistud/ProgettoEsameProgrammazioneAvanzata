@@ -30,7 +30,7 @@ public record Expression(Node root) {
       return m -> m.get(((Variable) root).name());
     }
     if (root instanceof Constant) {
-      return _ -> ((Constant) root).value();
+      return m -> ((Constant) root).value();
     }
     return m ->
             ((Operator) root).type().toFunction().apply(

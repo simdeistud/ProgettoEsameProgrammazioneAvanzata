@@ -6,13 +6,10 @@ import java.util.concurrent.Executors;
 
 public class Server {
 
-  public static final String QUIT_CMD = "BYE";
-
   private static long numOfOkResps = 0;
   private static long avgRespTimeInMillis = 0;
   private static long maxRespTimeInMillis = 0;
 
-  protected static final ExecutorService STAT_REQS_EXECUTOR = Executors.newCachedThreadPool();
   protected static final ExecutorService COMP_REQS_EXECUTOR = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
 

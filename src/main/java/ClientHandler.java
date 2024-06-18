@@ -6,7 +6,6 @@ import java.io.*;
 import java.net.Socket;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.function.Function;
 
 public class ClientHandler extends Thread {
@@ -126,17 +125,17 @@ public class ClientHandler extends Thread {
       return "";
     }
 
-    private static String generateStatResponse(final StatRequest req) throws ExecutionException, InterruptedException {
+    private static String generateStatResponse(final StatRequest req) {
 
-      Future<Long> result = Server.STAT_REQS_EXECUTOR.submit(() -> switch (req.kind()) {
+      Long result =  switch (req.kind()) {
         case StatRequest.StatKind.REQS -> Server.numOfOkResps();
         case StatRequest.StatKind.AVG_TIME -> Server.avgRespTimeInMillis();
         case StatRequest.StatKind.MAX_TIME -> Server.maxRespTimeInMillis();
-      });
+      };
 
       return req.kind() == StatRequest.StatKind.REQS ?
-              String.valueOf(result.get()) :
-              String.format("%#.3f", (double) result.get() / (double) 1000);
+              String.valueOf(result) :
+              String.format("%#.3f", (double) result / (double) 1000);
     }
 
     private static String generateComputationResponse(final CompRequest req) throws MalformedRequestException, ExecutionException, InterruptedException {

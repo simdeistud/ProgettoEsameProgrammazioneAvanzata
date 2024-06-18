@@ -13,4 +13,12 @@ public class Request {
     return content;
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    return content.equals(((Request) o).content);
+  }
+
 }
+

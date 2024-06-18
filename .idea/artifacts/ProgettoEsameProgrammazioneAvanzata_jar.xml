@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="jar" name="ProgettoEsameProgrammazioneAvanzata:jar">
-    <output-path>$USER_HOME$/Documents</output-path>
+    <output-path>$PROJECT_DIR$/out/artifacts/ProgettoEsameProgrammazioneAvanzata_jar</output-path>
     <root id="archive" name="ProgettoEsameProgrammazioneAvanzata.jar">
       <element id="module-output" name="ProgettoEsameProgrammazioneAvanzata" />
     </root>
