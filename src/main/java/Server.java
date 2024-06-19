@@ -44,7 +44,7 @@ public class Server {
     out.println(msg);
   }
 
-  protected static void updateRespsStats(final long respTime) {
+  protected synchronized static void updateRespsStats(final long respTime) {
 
     numOfOkResps++;
 
